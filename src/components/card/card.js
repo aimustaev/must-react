@@ -61,7 +61,7 @@ export class Card {
       //! для сохранения контекста использовать только стрелочные функциии
       this._deleteCard(evt);
       this._handleLikeCard(evt);
-      this._callbackZoom(this._data);
+      this._callbackZoom(evt, this._data);
     });
   }
 }

@@ -6,8 +6,8 @@ import {
   Section,
   PopupWithImage,
   Popup,
-  PopupWithForm,
 } from './components';
+import { popupEditProfile } from './popupEditProfile';
 import './index.css';
 
 const editProfileButton = document.querySelector('.profile__edit-button');
@@ -24,14 +24,21 @@ const formAddNewCards = document.getElementsByName('popup-form-add-new-card')[0]
 const titleInput = formElementAdd.querySelector('.popup__input_data_title');
 const photoInput = formElementAdd.querySelector('.popup__input_data_photo');
 
-const popupEditProfile = new Popup('.popup_type_edit');
-const popupAddCard = new Popup('.popup_type_add');
-
-popupEditProfile.setEventListeners();
-popupAddCard.setEventListeners();
-
 const popupZoomCard = new PopupWithImage('.popup_type_photo');
 popupZoomCard.setEventListeners();
+
+/*
+ ** popupAddCard
+ */
+const popupAddCard = new Popup('.popup_type_add');
+popupAddCard.setEventListeners();
+//* функция для отправки данных по кнопке сохранить в добавление нового места
+function handleFormSubmitAddNewCard(evt) {
+  evt.preventDefault();
+  createCard({ name: titleInput.value, link: photoInput.value });
+  popupAddCard.close();
+  evt.target.reset();
+}
 
 const createCard = (initialCard) => {
   const card = new Card({
@@ -51,16 +58,8 @@ const section = new Section({ items: initialCards, renderer: createCard }, '.gal
 
 section.renderItems();
 
-//* функция для отправки данных по кнопке сохранить в профиле
-function handleFormSubmitEditProfile(evt) {
-  evt.preventDefault(); //* отменяет стандартную отправку формы, так мы можем определить свою логику отправки
-  profileName.textContent = nameInput.value;
-  profileAboutMe.textContent = jobInput.value;
-  popupEditProfile.close();
-}
-
 //* форма элемента  редактирования профиля
-formElementEdit.addEventListener('submit', handleFormSubmitEditProfile);
+// formElementEdit.addEventListener('submit', handleFormSubmitEditProfile);
 const formEditValidator = new FormValidator(validationConfig, formElementEdit);
 formEditValidator.enableValidation();
 
@@ -71,14 +70,6 @@ editProfileButton.addEventListener('click', () => {
   formEditValidator.disableSubmitButton(); //* публичный метод
   formEditValidator.removeValidationErrors(); //* публичный метод
 });
-
-//* функция для отправки данных по кнопке сохранить в добавление нового места
-function handleFormSubmitAddNewCard(evt) {
-  evt.preventDefault();
-  createCard({ name: titleInput.value, link: photoInput.value });
-  popupAddCard.close();
-  evt.target.reset();
-}
 
 //* форма элемента добавления нового места
 formElementAdd.addEventListener('submit', handleFormSubmitAddNewCard);

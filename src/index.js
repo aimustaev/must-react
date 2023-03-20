@@ -8,7 +8,6 @@ import {
   UserInfo,
   PopupWithForm,
 } from './components';
-import { popupEditProfile } from './components/popup/popupEditProfile';
 import './index.css';
 
 const editProfileButton = document.querySelector('.profile__edit-button');
@@ -30,6 +29,15 @@ export const userInfo = new UserInfo({
 
 const popupZoomCard = new PopupWithImage('.popup_type_photo');
 popupZoomCard.setEventListeners();
+
+const popupEditProfile = new PopupWithForm('.popup_type_edit', handleFormSubmitEditProfile);
+popupEditProfile.setEventListeners();
+
+//* функция для отправки данных по кнопке сохранить в профиле
+function handleFormSubmitEditProfile(values) {
+  userInfo.setUserInfo(values);
+  popupEditProfile.close();
+}
 
 const popupAddCard = new PopupWithForm('.popup_type_add', handleFormSubmitAddNewCard);
 popupAddCard.setEventListeners();
@@ -76,6 +84,6 @@ formAddValidator.enableValidation();
 addNewCardButton.addEventListener('click', () => {
   popupAddCard.open();
   formAddNewCards.reset();
-  formAddValidator.disableSubmitButton(); //* публичный метод
-  formAddValidator.removeValidationErrors(); //* публичный метод
+  formAddValidator.disableSubmitButton();
+  formAddValidator.removeValidationErrors();
 });

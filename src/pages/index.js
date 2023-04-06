@@ -1,23 +1,3 @@
-// fetch('https://mesto.nomoreparties.co/v1/cohort-63/cards', {
-//   headers: {
-//     authorization: 'e2050b48-b9af-478f-bd01-da5552cfcb90',
-//   },
-// })
-//   .then((res) => res.json())
-//   .then((result) => {
-//     console.log(result);
-//   });
-
-// fetch('https://nomoreparties.co/v1/cohort-63/users/me ', {
-//   headers: {
-//     authorization: 'e2050b48-b9af-478f-bd01-da5552cfcb90',
-//   },
-// })
-//   .then((res) => res.json())
-//   .then((result) => {
-//     console.log(result);
-//   });
-
 import {
   FormValidator,
   validationConfig,
@@ -30,7 +10,12 @@ import {
 } from '../components';
 import './index.css';
 // import Api from '../components/api';
-import { actionGetUserInfo, actionGetInitialCards, actionLikeCard } from '../actions';
+import {
+  actionGetUserInfo,
+  actionGetInitialCards,
+  actionLikeCard,
+  actionDeleteCard,
+} from '../actions';
 
 const editProfileButton = document.querySelector('.profile__edit-button');
 const addNewCardButton = document.querySelector('.profile__add-button');
@@ -90,6 +75,9 @@ const createCard = (initialCard) => {
     callbackLikeCard: (id) => {
       actionLikeCard(id);
     },
+    callbackDeleteCard: (id) => {
+      actionDeleteCard(id);
+    },
     callbackZoom: (evt, props) => {
       const evtTarget = evt.target.closest('.card__photo');
       if (evtTarget) {
@@ -137,18 +125,6 @@ editAvatarButton.addEventListener('click', () => {
   formEditAvatarValidator.disableSubmitButton();
   formEditAvatarValidator.removeValidationErrors();
 });
-
-//переменная под id пользователя
-// let userId;
-
-// api
-//   .getAllData() // возвращает результат исполнения нужных промисов (карточки и информация пользователя)
-//   .then(([cards, userData]) => {
-//     userInfo.setUserInfo(userData);
-//     userId = userData._id;
-//     section.renderItems(cards);
-//   })
-//   .catch((err) => console.log(err));
 
 actionGetUserInfo(handleFormSubmitEditProfile);
 

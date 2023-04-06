@@ -59,23 +59,13 @@ export default class Api {
   likeCard(id) {
     return this._fetch(`/cards/likes/${id}`, 'PUT');
   }
-
+  //а он вообще нужен? куда его прикрутить?
   dislikeCard(id) {
-    return fetch(this._url + `/cards/likes/${id}`, {
-      method: 'DELETE',
-      headers: this._headers,
-    })
-      .then(this._checkResponse)
-      .catch((err) => console.log(err));
+    return this._fetch(`/cards/likes/${id}`, 'DELETE');
   }
 
   deleteCard(id) {
-    return fetch(this._url + `/cards/${id}`, {
-      method: 'DELETE',
-      headers: this._headers,
-    })
-      .then(this._checkResponse)
-      .catch((err) => console.log(err));
+    return this._fetch(`/cards/${id}`, 'DELETE');
   }
 
   handleUserAvatar(data) {

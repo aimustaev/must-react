@@ -13,6 +13,7 @@ export class Section {
   }
 
   renderItems(cards) {
+    console.log(this);
     this._clear();
 
     cards.forEach((item) => {

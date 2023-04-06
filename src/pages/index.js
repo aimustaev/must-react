@@ -29,7 +29,8 @@ import {
   PopupWithForm,
 } from '../components';
 import './index.css';
-import Api from '../components/api/Api';
+// import Api from '../components/api';
+import { actionGetUserInfo, actionGetInitialCards, actionLikeCard } from '../actions';
 
 const editProfileButton = document.querySelector('.profile__edit-button');
 const addNewCardButton = document.querySelector('.profile__add-button');
@@ -51,14 +52,6 @@ export const userInfo = new UserInfo({
   avatarSelector: '.profile__avatar',
 });
 
-export const api = new Api({
-  url: `https://mesto.nomoreparties.co/v1/cohort-63`,
-  headers: {
-    authorization: 'e2050b48-b9af-478f-bd01-da5552cfcb90',
-    'Content-Type': 'application/json',
-  },
-});
-
 const popupZoomCard = new PopupWithImage('.popup_type_photo');
 popupZoomCard.setEventListeners();
 
@@ -67,6 +60,7 @@ popupEditProfile.setEventListeners();
 
 //* функция для отправки данных по кнопке сохранить в профиле
 function handleFormSubmitEditProfile(values) {
+  console.log(values);
   userInfo.setUserInfo(values);
   popupEditProfile.close();
 }
@@ -93,6 +87,9 @@ const createCard = (initialCard) => {
   const card = new Card({
     ...initialCard,
     selector: '.card-template',
+    callbackLikeCard: (id) => {
+      actionLikeCard(id);
+    },
     callbackZoom: (evt, props) => {
       const evtTarget = evt.target.closest('.card__photo');
       if (evtTarget) {
@@ -104,8 +101,6 @@ const createCard = (initialCard) => {
 };
 
 const section = new Section({ renderer: createCard }, '.galery');
-
-section.renderItems(initialCards);
 
 const formEditProfilValidator = new FormValidator(validationConfig, formElementEdit);
 formEditProfilValidator.enableValidation();
@@ -154,3 +149,8 @@ editAvatarButton.addEventListener('click', () => {
 //     section.renderItems(cards);
 //   })
 //   .catch((err) => console.log(err));
+
+actionGetUserInfo(handleFormSubmitEditProfile);
+
+actionGetInitialCards((cards) => section.renderItems(cards));
+// section.renderItems(initialCards);

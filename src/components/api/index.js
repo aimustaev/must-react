@@ -5,28 +5,25 @@ export default class Api {
   }
 
   _checkResponse(res) {
+    console.log(res);
     if (res.ok) {
       return res.json();
     }
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
-  getUserInfo() {
-    return fetch(this._url + '/users/me', {
-      method: 'GET',
+  _fetch(path, method, body) {
+    return fetch(this._url + path, {
+      method,
       headers: this._headers,
+      body,
     })
       .then(this._checkResponse)
       .catch((err) => console.log(err));
   }
 
-  getInitialCards() {
-    return fetch(this._url + '/cards', {
-      method: 'GET',
-      headers: this._headers,
-    })
-      .then(this._checkResponse)
-      .catch((err) => console.log(err));
+  getUserInfo() {
+    return this._fetch('/users/me', 'GET');
   }
 
   setUserInfo(userData) {
@@ -55,13 +52,12 @@ export default class Api {
       .catch((err) => console.log(err));
   }
 
+  getInitialCards() {
+    return this._fetch('/cards', 'GET');
+  }
+
   likeCard(id) {
-    return fetch(this._url + `/cards/likes/${id}`, {
-      method: 'PUT',
-      headers: this._headers,
-    })
-      .then(this._checkResponse)
-      .catch((err) => console.log(err));
+    return this._fetch(`/cards/likes/${id}`, 'PUT');
   }
 
   dislikeCard(id) {
@@ -98,3 +94,11 @@ export default class Api {
     return Promise.all([this.getInitialCards(), this.getUserInfo()]);
   }
 }
+
+export const api = new Api({
+  url: `https://mesto.nomoreparties.co/v1/cohort-63`,
+  headers: {
+    authorization: 'e2050b48-b9af-478f-bd01-da5552cfcb90',
+    'Content-Type': 'application/json',
+  },
+});

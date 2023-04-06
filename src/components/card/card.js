@@ -1,9 +1,10 @@
 export class Card {
-  constructor({ selector, name, link, callbackZoom }) {
+  constructor({ selector, name, link, callbackZoom, callbackLikeCard, ...props }) {
     this._element = this._cloneCard(selector);
     this._setCardData(name, link);
-    this._data = { name, link };
+    this._data = { name, link, ...props };
     this._callbackZoom = callbackZoom;
+    this._callbackLikeCard = callbackLikeCard;
     this._setEventListeners();
   }
 
@@ -52,6 +53,7 @@ export class Card {
   _handleLikeCard(evt) {
     const buttonLike = evt.target;
     if (buttonLike.classList.contains('card__like-button')) {
+      this._callbackLikeCard(this._data._id);
       buttonLike.classList.toggle('card__like-button_active');
     }
   }

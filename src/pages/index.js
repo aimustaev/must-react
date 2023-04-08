@@ -13,7 +13,7 @@ import './index.css';
 import {
   actionGetUserInfo,
   actionGetInitialCards,
-  actionLikeCard,
+  actionSetUserInfo,
   actionDeleteCard,
 } from '../actions';
 
@@ -44,10 +44,16 @@ const popupEditProfile = new PopupWithForm('.popup_type_edit', handleFormSubmitE
 popupEditProfile.setEventListeners();
 
 //* функция для отправки данных по кнопке сохранить в профиле
-function handleFormSubmitEditProfile(values) {
-  console.log(values);
-  userInfo.setUserInfo(values);
-  popupEditProfile.close();
+async function handleFormSubmitEditProfile(values) {
+  const data = {
+    name: values['input-name'],
+    about: values['input-job'],
+  };
+  const result = await actionSetUserInfo(data);
+  if (result._id) {
+    userInfo.setUserInfo(result);
+    popupEditProfile.close();
+  }
 }
 
 const popupEditAvatar = new PopupWithForm('.popup_type_avatar', handleFormSubmitEditProfile);
@@ -118,7 +124,7 @@ editAvatarButton.addEventListener('click', () => {
   formEditAvatarValidator.removeValidationErrors();
 });
 
-actionGetUserInfo(handleFormSubmitEditProfile);
+actionGetUserInfo((props) => userInfo.setUserInfo(props));
 
 actionGetInitialCards((cards) => section.renderItems(cards));
 // section.renderItems(initialCards);

@@ -12,7 +12,12 @@ export default class Api {
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
-  _fetch(path, method, body) {
+  _fetch(path, method, data) {
+    let body = data;
+    if (method === 'PATCH' && data) {
+      body = JSON.stringify(data);
+    }
+
     return fetch(this._url + path, {
       method,
       headers: this._headers,
@@ -26,17 +31,8 @@ export default class Api {
     return this._fetch('/users/me', 'GET');
   }
 
-  setUserInfo(userData) {
-    return fetch(this._url + '/users/me', {
-      method: 'PATCH',
-      headers: this._headers,
-      body: JSON.stringify({
-        name: userData.userName,
-        about: userData.userAbout,
-      }),
-    })
-      .then(this._checkResponse)
-      .catch((err) => console.log(err));
+  setUserInfo(data) {
+    return this._fetch('/users/me', 'PATCH', data);
   }
 
   addNewCard(data) {

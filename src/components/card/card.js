@@ -43,7 +43,7 @@ export class Card {
     }
   }
 
-  _setLikeData({ hasLike }) {
+  _setLikeData({ hasLike, likes }) {
     this._data = { ...this._data, hasLike };
     // Отрисовка like
     const btnLike = this._element.querySelector('.card__like-button');
@@ -53,6 +53,12 @@ export class Card {
       } else {
         btnLike.classList.remove('card__like-button_active');
       }
+    }
+    const counter = this._element.querySelector('.card__counter');
+    if(counter && likes.length){
+      counter.textContent = likes.length;
+    } else {
+      counter.textContent = '';
     }
   }
 
@@ -76,7 +82,7 @@ export class Card {
   async _handleClickDelete(evt) {
     if (evt.target.classList.contains('card__delete-button')) {
       const result = await actionDeleteCard(this._data._id);
-      if (!result.includes('Ошибка')) {
+      if (result?.message === "Пост удалён") {
         this._element.remove();
         this._element = null;
       }
@@ -86,12 +92,10 @@ export class Card {
   //* метод лайка карточки
   async _handleClickLike(evt) {
     const buttonLike = evt.target;
-    console.log(buttonLike);
     if (buttonLike.classList.contains('card__like-button')) {
       const result = await actionLikeCard(this._data._id, this._data.hasLike);
       const hasLike = this._checkLikeById(result.likes || []);
-      console.log(hasLike);
-      this._setLikeData({ hasLike });
+      this._setLikeData({ hasLike, likes: result?.likes || [] });
     }
   }
 

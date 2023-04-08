@@ -14,7 +14,7 @@ import {
   actionGetUserInfo,
   actionGetInitialCards,
   actionSetUserInfo,
-  actionDeleteCard,
+  actionAddNewCard,
 } from '../actions';
 
 const editProfileButton = document.querySelector('.profile__edit-button');
@@ -69,9 +69,12 @@ const popupAddCard = new PopupWithForm('.popup_type_add', handleFormSubmitAddNew
 popupAddCard.setEventListeners();
 
 //* функция для отправки данных по кнопке сохранить
-function handleFormSubmitAddNewCard() {
-  createCard({ name: titleInput.value, link: photoInput.value });
-  popupAddCard.close();
+async function handleFormSubmitAddNewCard() {
+  const result = await actionAddNewCard({ name: titleInput.value, link: photoInput.value });
+  if (result?._id) {
+    createCard(result);
+    popupAddCard.close();
+  }
 }
 
 const createCard = (initialCard) => {

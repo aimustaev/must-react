@@ -5,7 +5,6 @@ export default class Api {
   }
 
   _checkResponse(res) {
-    console.log(res);
     if (res.ok) {
       return res.json();
     }
@@ -14,7 +13,7 @@ export default class Api {
 
   _fetch(path, method, data) {
     let body = data;
-    if (method === 'PATCH' && data) {
+    if ((method === 'PATCH' || method === 'POST') && data) {
       body = JSON.stringify(data);
     }
 
@@ -36,16 +35,7 @@ export default class Api {
   }
 
   addNewCard(data) {
-    return fetch(this._url + '/cards', {
-      method: 'POST',
-      headers: this._headers,
-      body: JSON.stringify({
-        name: data.name,
-        link: data.link,
-      }),
-    })
-      .then(this._checkResponse)
-      .catch((err) => console.log(err));
+    return this._fetch('/cards', 'POST', data);
   }
 
   getInitialCards() {

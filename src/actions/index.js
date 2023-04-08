@@ -12,6 +12,10 @@ export const actionGetInitialCards = (onRenderCards) => {
   api.getInitialCards().then((result) => onRenderCards(result));
 };
 
+export const actionAddNewCard = (data) => {
+  return api.addNewCard(data);
+};
+
 export const actionLikeCard = (id, hasLike) => {
   if (!hasLike) {
     return api.likeCard(id);
@@ -20,7 +24,7 @@ export const actionLikeCard = (id, hasLike) => {
 };
 
 export const actionDeleteCard = (id) => {
-  api.deleteCard(id);
+  return api.deleteCard(id);
 };
 
 // export const actionDislikeCard = (id) => {

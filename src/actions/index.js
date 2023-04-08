@@ -8,8 +8,11 @@ export const actionGetInitialCards = (onRenderCards) => {
   api.getInitialCards().then((result) => onRenderCards(result));
 };
 
-export const actionLikeCard = (id) => {
-  api.likeCard(id);
+export const actionLikeCard = (id, hasLike) => {
+  if (!hasLike) {
+    return api.likeCard(id);
+  }
+  return api.dislikeCard(id);
 };
 
 export const actionDeleteCard = (id) => {

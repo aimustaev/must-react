@@ -69,21 +69,13 @@ function handleFormSubmitAddNewCard() {
 }
 
 const createCard = (initialCard) => {
+  const userId = userInfo.getUserId();
+
   const card = new Card({
     ...initialCard,
+    userId: userId,
     selector: '.card-template',
-    callbackLikeCard: (id) => {
-      actionLikeCard(id);
-    },
-    callbackDeleteCard: (id) => {
-      actionDeleteCard(id);
-    },
-    callbackZoom: (evt, props) => {
-      const evtTarget = evt.target.closest('.card__photo');
-      if (evtTarget) {
-        popupZoomCard.open(evt, props);
-      }
-    },
+    callbackZoom: (props) => popupZoomCard.open(props),
   });
   section.addItem(card.getElement());
 };

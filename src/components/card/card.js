@@ -1,19 +1,16 @@
+import { actionLikeCard, actionDeleteCard } from '../../actions';
+
 export class Card {
-  constructor({
-    selector,
-    name,
-    link,
-    callbackZoom,
-    callbackLikeCard,
-    callbackDeleteCard,
-    ...props
-  }) {
-    this._element = this._cloneCard(selector);
-    this._setCardData(name, link);
-    this._data = { name, link, ...props };
+  constructor({ selector, name, link, userId, callbackZoom, ...props }) {
+    this._userId = userId;
+    this._element = this._cloneCard(selector, { name, link });
+
+    const hasLike = this._checkLikeById(props.likes || []);
+    this._data = { name, link, hasLike, ...props };
+
+    this._setCardData(this._data);
+
     this._callbackZoom = callbackZoom;
-    this._callbackLikeCard = callbackLikeCard;
-    this._callbackDeleteCard = callbackDeleteCard;
     this._setEventListeners();
   }
 
@@ -30,12 +27,15 @@ export class Card {
   }
 
   //* метод наполнение данными карточки
-  _setCardData(name, link) {
-    this._setTitleData(name);
-    this._setImageData(name, link);
+  _setCardData(data) {
+    this._setTitleData(data);
+    this._setImageData(data);
+    this._setLikeData(data);
   }
 
-  _setImageData(name, link) {
+  _setImageData({ name, link }) {
+    this._data = { ...this._data, name, link };
+    // Отрисовка картинки
     const image = this._element.querySelector('.card__photo');
     if (image) {
       image.src = link;
@@ -43,62 +43,71 @@ export class Card {
     }
   }
 
-  _setTitleData(name) {
+  _setLikeData({ hasLike }) {
+    this._data = { ...this._data, hasLike };
+    // Отрисовка like
+    const btnLike = this._element.querySelector('.card__like-button');
+    if (btnLike) {
+      if (hasLike) {
+        btnLike.classList.add('card__like-button_active');
+      } else {
+        btnLike.classList.remove('card__like-button_active');
+      }
+    }
+  }
+
+  _setTitleData({ name }) {
+    this._data = { ...this._data, name };
+    // Отрисовка названия
     const title = this._element.querySelector('.card__title');
     if (title) {
       title.textContent = name;
     }
   }
 
+  _checkLikeById(likes) {
+    if (this._userId) {
+      return likes.some((like) => like._id === this._userId);
+    }
+    return false;
+  }
+
   //* метод удаления карточки
-  _deleteCard(evt) {
+  async _handleClickDelete(evt) {
     if (evt.target.classList.contains('card__delete-button')) {
-      this._element.remove();
-      this._element = null;
-      this._callbackDeleteCard(this._data._id);
+      const result = await actionDeleteCard(this._data._id);
+      if (!result.includes('Ошибка')) {
+        this._element.remove();
+        this._element = null;
+      }
     }
   }
 
   //* метод лайка карточки
-  _handleLikeCard(evt) {
+  async _handleClickLike(evt) {
     const buttonLike = evt.target;
+    console.log(buttonLike);
     if (buttonLike.classList.contains('card__like-button')) {
-      this._callbackLikeCard(this._data._id);
-      buttonLike.classList.toggle('card__like-button_active');
+      const result = await actionLikeCard(this._data._id, this._data.hasLike);
+      const hasLike = this._checkLikeById(result.likes || []);
+      console.log(hasLike);
+      this._setLikeData({ hasLike });
     }
   }
 
-  // handleLikeCard() {
-  //   const likeButton = this._view.querySelector('.elements__like-button')
-  //   const likeCount = this._view.querySelector('.elements__like-count')
-
-  //   if(!(likeButton.classList.contains('elements__like-button_active'))) {
-  //     this._api.like(this._id)
-  //       .then((data) => {
-  //         likeButton.classList.add('elements__like-button_active')
-  //         likeCount.textContent = data.likes.length
-  //       })
-  //       .catch((err) => {
-  //         console.log(err)
-  //       })
-  //   } else {
-  //     this._api.dislike(this._id)
-  //       .then((data) => {
-  //         likeButton.classList.remove('elements__like-button_active')
-  //         likeCount.textContent = data.likes.length
-  //       })
-  //       .catch((err) => {
-  //         console.log(err)
-  //       })
-  //   }
-  // }
+  _handleClickZoom(evt) {
+    const evtTarget = evt.target.closest('.card__photo');
+    if (evtTarget) {
+      this._callbackZoom(this._data);
+    }
+  }
 
   _setEventListeners() {
     this._element.addEventListener('click', (evt) => {
       //! для сохранения контекста использовать только стрелочные функциии
-      this._deleteCard(evt);
-      this._handleLikeCard(evt);
-      this._callbackZoom(evt, this._data);
+      this._handleClickDelete(evt);
+      this._handleClickLike(evt);
+      this._handleClickZoom(evt);
     });
   }
 }

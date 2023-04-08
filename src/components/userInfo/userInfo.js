@@ -15,6 +15,7 @@ export class UserInfo {
       name: this.name.textContent,
       about: this.about.textContent,
       avatar: this.avatar.src,
+      _id: this._id,
     };
     return this._userData;
   }

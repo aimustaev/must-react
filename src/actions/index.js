@@ -27,6 +27,6 @@ export const actionDeleteCard = (id) => {
   return api.deleteCard(id);
 };
 
-// export const actionDislikeCard = (id) => {
-//   api.dislikeCard(id);
-// };
+export const actionSetUserAvatar = (data) => {
+  return api.setUserAvatar(data);
+};

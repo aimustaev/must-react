@@ -45,7 +45,7 @@ export default class Api {
   likeCard(id) {
     return this._fetch(`/cards/likes/${id}`, 'PUT');
   }
-  //а он вообще нужен? куда его прикрутить?
+
   dislikeCard(id) {
     return this._fetch(`/cards/likes/${id}`, 'DELETE');
   }
@@ -54,20 +54,8 @@ export default class Api {
     return this._fetch(`/cards/${id}`, 'DELETE');
   }
 
-  handleUserAvatar(data) {
-    return fetch(this._url + `/users/me/avatar`, {
-      method: 'PATCH',
-      headers: this._headers,
-      body: JSON.stringify({
-        avatar: data.userAvatar,
-      }),
-    })
-      .then(this._checkResponse)
-      .catch((err) => console.log(err));
-  }
-
-  getAllData() {
-    return Promise.all([this.getInitialCards(), this.getUserInfo()]);
+  setUserAvatar(data) {
+    return this._fetch(`/users/me/avatar`, 'PATCH', data);
   }
 }
 

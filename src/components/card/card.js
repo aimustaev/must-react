@@ -1,7 +1,7 @@
 import { actionLikeCard, actionDeleteCard } from '../../actions';
 
 export class Card {
-  constructor({ selector, name, link, userId, callbackZoom, ...props }) {
+  constructor({ selector, name, link, userId, callbackZoom, callbackConfirmation, ...props }) {
     this._userId = userId;
     this._element = this._cloneCard(selector, { name, link });
 
@@ -11,7 +11,11 @@ export class Card {
     this._setCardData(this._data);
 
     this._callbackZoom = callbackZoom;
+    this._callbackConfirmation = callbackConfirmation;
     this._setEventListeners();
+
+    this._cardButtonDelete = this._element.querySelector('.card__delete-button');
+    this._removeBtnDeleteCard();
   }
 
   //* публичный метод, для получения dom элемента карточки
@@ -22,7 +26,6 @@ export class Card {
   //* метод для получения шаблона карточки и наполнение данными
   _cloneCard(selector) {
     const card = document.querySelector(selector).content.querySelector('.card').cloneNode(true);
-
     return card;
   }
 
@@ -43,6 +46,12 @@ export class Card {
     }
   }
 
+  _removeBtnDeleteCard() {
+    if (this._data.owner._id !== this._userId) {
+      this._cardButtonDelete.remove();
+    }
+  }
+
   _setLikeData({ hasLike, likes }) {
     this._data = { ...this._data, hasLike };
     // Отрисовка like
@@ -55,7 +64,7 @@ export class Card {
       }
     }
     const counter = this._element.querySelector('.card__counter');
-    if(counter && likes.length){
+    if (counter && likes.length) {
       counter.textContent = likes.length;
     } else {
       counter.textContent = '';
@@ -81,8 +90,9 @@ export class Card {
   //* метод удаления карточки
   async _handleClickDelete(evt) {
     if (evt.target.classList.contains('card__delete-button')) {
+      this._cardButtonDelete.addEventListener('click', () => this._callbackProveDelete());
       const result = await actionDeleteCard(this._data._id);
-      if (result?.message === "Пост удалён") {
+      if (result?.message === 'Пост удалён') {
         this._element.remove();
         this._element = null;
       }

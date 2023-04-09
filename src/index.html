@@ -82,9 +82,9 @@
   </div>
 
   <!--Попап подтверждения удаления карточки-->
-  <div class="popup popup_type_prove">
-    <div class="popup__container popup__container_type_prove">
-      <h2 class="popup__title-prove">Вы уверены?</h2>
+  <div class="popup popup_type_confirmation">
+    <div class="popup__container popup__container_type_confirmation">
+      <h2 class="popup__title-confirm">Вы уверены?</h2>
       <form class="popup__form" name="popup-form-confirm" autocomplete="off" novalidate>
         <button class="popup__submit-button" aria-label="Да" type="submit">Да</button>
       </form>
@@ -102,15 +102,15 @@
   </div>
 
   <!--Попап редактирования аватара-->
-  <div class="popup popup_type_avatar overlay">
+  <div class="popup popup_type_avatar">
     <div class="popup__container popup__container_type_avatar">
       <h2 class="popup__title">Обновить аватар</h2>
       <form class="popup__form" name="popup-form-change-avatar" autocomplete="off" novalidate>
         <fieldset class="popup__set">
           <label class="popup__field">
-            <input type="url" required class="popup__input popup__input_type_link" placeholder="Ссылка на аватар"
-              name="input-link" id="link-avatar">
-            <span class="popup__input-error avatar-input-error"></span>
+            <input type="url" required class="popup__input popup__input_data_link" placeholder="Ссылка на аватар"
+              name="input-link" id="link-input">
+            <span class="popup__input-error link-input-error"></span>
           </label>
           <button class="popup__submit-button" aria-label="сохранить" type="submit">Сохранить</button>
         </fieldset>

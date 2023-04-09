@@ -7,14 +7,15 @@ import {
   PopupWithImage,
   UserInfo,
   PopupWithForm,
+  PopupWithConfirmation,
 } from '../components';
 import './index.css';
-// import Api from '../components/api';
 import {
   actionGetUserInfo,
   actionGetInitialCards,
   actionSetUserInfo,
   actionAddNewCard,
+  actionSetUserAvatar,
 } from '../actions';
 
 const editProfileButton = document.querySelector('.profile__edit-button');
@@ -23,6 +24,7 @@ const editAvatarButton = document.querySelector('.profile__change-button');
 //* Переменные попапа для редактирования профиля
 const formElementEdit = document.querySelector('.popup__container_type_edit');
 const formElementAvatar = document.querySelector('.popup__container_type_avatar');
+const formEditAvatar = document.getElementsByName('popup-form-change-avatar')[0];
 const nameInput = formElementEdit.querySelector('.popup__input_data_name');
 const aboutInput = formElementEdit.querySelector('.popup__input_data_job');
 //* Переменные попапа для добавление новых карточек
@@ -56,14 +58,32 @@ async function handleFormSubmitEditProfile(values) {
   }
 }
 
-const popupEditAvatar = new PopupWithForm('.popup_type_avatar', handleFormSubmitEditProfile);
+const formEditAvatarValidator = new FormValidator(validationConfig, formElementAvatar);
+formEditAvatarValidator.enableValidation();
+
+const popupEditAvatar = new PopupWithForm('.popup_type_avatar', handleFormSubmitEditAvatar);
 popupEditAvatar.setEventListeners();
 
-//* функция для отправки данных по кнопке сохранить в профиле
-// function handleFormSubmitEditAvatar(values) {
-//   userInfo.setUserInfo(values);
-//   popupEditProfile.close();
-// }
+async function handleFormSubmitEditAvatar(values) {
+  const data = {
+    avatar: values['input-link'],
+  };
+  const result = await actionSetUserAvatar(data);
+  if (result.avatar) {
+    userInfo.setUserInfo(result);
+    popupEditAvatar.close();
+  }
+}
+
+editAvatarButton.addEventListener('click', () => {
+  popupEditAvatar.open();
+  formEditAvatar.reset();
+  formEditAvatarValidator.disableSubmitButton();
+  formEditAvatarValidator.removeValidationErrors();
+});
+
+const popupWithConfirmation = new PopupWithConfirmation('.popup_type_confirmation');
+popupWithConfirmation.setEventListeners();
 
 const popupAddCard = new PopupWithForm('.popup_type_add', handleFormSubmitAddNewCard);
 popupAddCard.setEventListeners();
@@ -85,6 +105,7 @@ const createCard = (initialCard) => {
     userId: userId,
     selector: '.card-template',
     callbackZoom: (props) => popupZoomCard.open(props),
+    callbackConfirmation: (item) => popupWithConfirmation.open(item),
   });
   section.addItem(card.getElement());
 };
@@ -118,16 +139,6 @@ addNewCardButton.addEventListener('click', () => {
   formAddNewCardValidator.removeValidationErrors();
 });
 
-const formEditAvatarValidator = new FormValidator(validationConfig, formElementAvatar);
-formEditAvatarValidator.enableValidation();
-
-editAvatarButton.addEventListener('click', () => {
-  popupEditAvatar.open();
-  formEditAvatarValidator.disableSubmitButton();
-  formEditAvatarValidator.removeValidationErrors();
-});
-
 actionGetUserInfo((props) => userInfo.setUserInfo(props));
 
 actionGetInitialCards((cards) => section.renderItems(cards));
-// section.renderItems(initialCards);

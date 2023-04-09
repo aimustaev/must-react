@@ -15,7 +15,7 @@ export class Card {
     this._setEventListeners();
 
     this._cardButtonDelete = this._element.querySelector('.card__delete-button');
-    this._removeBtnDeleteCard();popup__title-confirm
+    this._removeBtnDeleteCard();
   }
 
   //* публичный метод, для получения dom элемента карточки

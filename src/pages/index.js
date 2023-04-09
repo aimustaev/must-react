@@ -51,6 +51,7 @@ async function handleFormSubmitEditProfile(values) {
     name: values['input-name'],
     about: values['input-job'],
   };
+
   const result = await actionSetUserInfo(data);
   if (result._id) {
     userInfo.setUserInfo(result);
@@ -106,8 +107,8 @@ const createCard = (initialCard) => {
     selector: '.card-template',
     callbackZoom: (props) => popupZoomCard.open(props),
     callbackConfirmation: (ref, id) => {
-      popupWithConfirmation.open()
-      popupWithConfirmation.setCardData(ref, id)
+      popupWithConfirmation.open();
+      popupWithConfirmation.setCardData(ref, id);
     },
   });
   section.addItem(card.getElement());

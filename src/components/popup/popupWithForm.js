@@ -24,7 +24,7 @@ export class PopupWithForm extends Popup {
     this._popupForm.addEventListener('submit', (evt) => {
       evt.preventDefault();
       const values = this._getInputValues();
-      this.changeTextButton('Сохрание ...');
+      this.changeTextButton('Сохрание...');
       this._callbackSibmitForm(values).then(() => this.changeTextButton('Сохранить'));
     });
   }

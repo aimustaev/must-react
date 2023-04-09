@@ -105,7 +105,10 @@ const createCard = (initialCard) => {
     userId: userId,
     selector: '.card-template',
     callbackZoom: (props) => popupZoomCard.open(props),
-    callbackConfirmation: (item) => popupWithConfirmation.open(item),
+    callbackConfirmation: (ref, id) => {
+      popupWithConfirmation.open()
+      popupWithConfirmation.setCardData(ref, id)
+    },
   });
   section.addItem(card.getElement());
 };

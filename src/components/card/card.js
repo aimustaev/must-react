@@ -15,7 +15,7 @@ export class Card {
     this._setEventListeners();
 
     this._cardButtonDelete = this._element.querySelector('.card__delete-button');
-    this._removeBtnDeleteCard();
+    this._removeBtnDeleteCard();popup__title-confirm
   }
 
   //* публичный метод, для получения dom элемента карточки
@@ -90,12 +90,7 @@ export class Card {
   //* метод удаления карточки
   async _handleClickDelete(evt) {
     if (evt.target.classList.contains('card__delete-button')) {
-      this._cardButtonDelete.addEventListener('click', () => this._callbackProveDelete());
-      const result = await actionDeleteCard(this._data._id);
-      if (result?.message === 'Пост удалён') {
-        this._element.remove();
-        this._element = null;
-      }
+      this._callbackConfirmation(this._element, this._data._id);
     }
   }
 
